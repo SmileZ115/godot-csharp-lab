@@ -1,3 +1,26 @@
-# Godot 4+ specific ignores
+# Godot
 .godot/
+.import/
+.nomedia
 /android/
+export.cfg
+export_credentials.cfg
+*.tmp
+*.translation
+
+# Godot C# / Mono
+.mono/
+data_*/
+mono_crash.*.json
+~*.dll
+
+# .NET build outputs
+bin/
+obj/
+
+# VS Code
+.vscode/
+
+# Export outputs
+*.exe
+# *.pck
