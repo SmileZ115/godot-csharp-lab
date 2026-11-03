@@ -3,10 +3,44 @@
 [ext_resource type="Script" uid="uid://mfh4v6dbfty7" path="res://scripts/Main.cs" id="1_o5qli"]
 [ext_resource type="Texture2D" uid="uid://bn13b2bhi57ah" path="res://icon.svg" id="2_0wfyh"]
 [ext_resource type="Script" uid="uid://deoruqjfqlfi5" path="res://scripts/Player.cs" id="3_sugp2"]
+[ext_resource type="PackedScene" uid="uid://cttqco0gwho85" path="res://scenes/pickup_area.tscn" id="4_jyhfs"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6kesh"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jlmum"]
+size = Vector2(35, 419)
 
 [node name="Main" type="Node2D" unique_id=1986523674]
 script = ExtResource("1_o5qli")
+pickupScene = ExtResource("4_jyhfs")
 
-[node name="Player" type="Sprite2D" parent="." unique_id=824729693]
-texture = ExtResource("2_0wfyh")
+[node name="Player" type="CharacterBody2D" parent="." unique_id=375255560]
 script = ExtResource("3_sugp2")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1121991758]
+texture = ExtResource("2_0wfyh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=301092943]
+shape = SubResource("RectangleShape2D_6kesh")
+
+[node name="Wall" type="StaticBody2D" parent="." unique_id=1330946874]
+position = Vector2(584, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall" unique_id=219761385]
+position = Vector2(17.5, 210.5)
+shape = SubResource("RectangleShape2D_jlmum")
+
+[node name="ColorRect" type="ColorRect" parent="Wall" unique_id=778837760]
+offset_right = 35.0
+offset_bottom = 420.0
+color = Color(0.023529412, 0.3137255, 1, 1)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=917003673]
+
+[node name="ScoreLabel" type="Label" parent="HUD" unique_id=1192059403]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 73.0
+offset_bottom = 35.0
+text = "Score: 0"
