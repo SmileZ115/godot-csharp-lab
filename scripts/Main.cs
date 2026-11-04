@@ -12,11 +12,18 @@ public partial class Main : Node2D
 
     private Label scoreLabel;
 
+    private Timer pickupTimer;
+
+    private Label spawnStatusLabel;
+
     [Export]
     private PackedScene pickupScene;
 
     [Export]
     private float minPickupDistance = 50f;
+
+    [Export]
+    private int maxPickups = 10;
 
     public override void _Ready()
     {
@@ -24,9 +31,14 @@ public partial class Main : Node2D
 
         rng = new RandomNumberGenerator();
 
+        pickupTimer = GetNode<Timer>("PickupTimer");
+
         scoreLabel = GetNode<Label>("HUD/ScoreLabel");
 
+        spawnStatusLabel = GetNode<Label>("HUD/SpawnStatusLabel");
+
         UpdateScoreLabel();
+        UpdateSpawnStatusLabel();
     }
 
     public override void _Process(double delta)
@@ -34,6 +46,11 @@ public partial class Main : Node2D
         if (Input.IsActionJustPressed("ui_accept"))
         {
             SpawnPickup();
+        }
+
+        if (Input.IsActionJustPressed("toggle_spawn"))
+        {
+            TogglePickupTimer();
         }
     }
 
@@ -54,7 +71,13 @@ public partial class Main : Node2D
     }
 
     private void SpawnPickup()
-    {   
+    {
+        var pickups = GetTree().GetNodesInGroup("Pickups");
+        if (pickups.Count >= maxPickups)
+        {
+            GD.Print("Maximum pickup limit reached!");
+            return;
+        }
         for (int i = 0; i < 5; i++)
         {
             var spawnPosition = new Vector2(
@@ -91,5 +114,37 @@ public partial class Main : Node2D
             }
         }
         return true;
+    }
+
+    private void _on_pickup_timer_timeout()
+    {
+        SpawnPickup();
+    }
+
+    private void TogglePickupTimer()
+    {
+        if (pickupTimer.IsStopped())
+        {
+            pickupTimer.Start();
+            GD.Print("Pickup timer started.");
+        }
+        else
+        {
+            pickupTimer.Stop();
+            GD.Print("Pickup timer stopped.");
+        }
+        UpdateSpawnStatusLabel();
+    }
+
+    private void UpdateSpawnStatusLabel()
+    {
+        if (pickupTimer.IsStopped())
+        {
+            spawnStatusLabel.Text = "Auto Spawn: OFF";
+        }
+        else
+        {
+            spawnStatusLabel.Text = "Auto Spawn: ON";
+        }
     }
 }

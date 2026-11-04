@@ -44,3 +44,18 @@ offset_top = 12.0
 offset_right = 73.0
 offset_bottom = 35.0
 text = "Score: 0"
+
+[node name="SpawnStatusLabel" type="Label" parent="HUD" unique_id=330346634]
+anchors_preset = -1
+anchor_right = 0.002
+offset_left = 14.0
+offset_top = 32.0
+offset_right = 64.696
+offset_bottom = 55.0
+text = "Auto Spawn: ON"
+
+[node name="PickupTimer" type="Timer" parent="." unique_id=1267102491]
+wait_time = 2.0
+autostart = true
+
+[connection signal="timeout" from="PickupTimer" to="." method="_on_pickup_timer_timeout"]
