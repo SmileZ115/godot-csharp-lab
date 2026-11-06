@@ -54,6 +54,24 @@ offset_right = 64.696
 offset_bottom = 55.0
 text = "Auto Spawn: ON"
 
+[node name="PickupCountLabel" type="Label" parent="HUD" unique_id=1901489452]
+offset_left = 14.0
+offset_top = 58.0
+offset_right = 54.0
+offset_bottom = 81.0
+text = "Pickups: 0 / 10"
+
+[node name="PickupArea" parent="HUD" unique_id=1339737831 instance=ExtResource("4_jyhfs")]
+position = Vector2(204, 355)
+lifetime = 5.0
+
+[node name="PickupArea2" parent="HUD" unique_id=1624375417 instance=ExtResource("4_jyhfs")]
+position = Vector2(478, 593)
+
+[node name="PickupArea3" parent="HUD" unique_id=2135274612 instance=ExtResource("4_jyhfs")]
+position = Vector2(921, 445)
+lifetime = 15.0
+
 [node name="PickupTimer" type="Timer" parent="." unique_id=1267102491]
 wait_time = 2.0
 autostart = true

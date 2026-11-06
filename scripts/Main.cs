@@ -8,6 +8,8 @@ public partial class Main : Node2D
 
     private int score = 0;
 
+    private const int MaxSpawnAttempts = 5;
+
     private RandomNumberGenerator rng;
 
     private Label scoreLabel;
@@ -15,6 +17,8 @@ public partial class Main : Node2D
     private Timer pickupTimer;
 
     private Label spawnStatusLabel;
+
+    private Label pickupCountLabel;
 
     [Export]
     private PackedScene pickupScene;
@@ -37,8 +41,11 @@ public partial class Main : Node2D
 
         spawnStatusLabel = GetNode<Label>("HUD/SpawnStatusLabel");
 
+        pickupCountLabel = GetNode<Label>("HUD/PickupCountLabel");
+
         UpdateScoreLabel();
         UpdateSpawnStatusLabel();
+        UpdatePickupCountLabel();
     }
 
     public override void _Process(double delta)
@@ -78,7 +85,7 @@ public partial class Main : Node2D
             GD.Print("Maximum pickup limit reached!");
             return;
         }
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < MaxSpawnAttempts; i++)
         {
             var spawnPosition = new Vector2(
             rng.RandfRange(margin, screenSize.X - margin),
@@ -89,17 +96,39 @@ public partial class Main : Node2D
             {
                 var pickup = (Pickup)pickupScene.Instantiate();
 
+                int roll = rng.RandiRange(1, 100);
+
+                if (roll <= 70)
+                {
+                    pickup.SetPoints(1);
+                    pickup.SetRarity(PickupRarity.Common);
+                }
+                else if (roll <= 95)
+                {
+                    pickup.SetPoints(5);
+                    pickup.SetRarity(PickupRarity.Special);
+                }
+                else
+                {
+                    pickup.SetPoints(10);
+                    pickup.SetRarity(PickupRarity.Rare);
+                }
+
                 pickup.Position = spawnPosition;
                 
                 pickup.PickupCollected += OnPickupCollected;
 
+                pickup.TreeExited += OnPickupRemoved;
+
                 AddChild(pickup);
+
+                UpdatePickupCountLabel();
 
                 return;
             }
         }
 
-        GD.Print("Failed to find a valid spawn position for pickup after 5 attempts.");
+        GD.Print($"Failed to find a valid spawn position after {MaxSpawnAttempts} attempts.");
     }
 
     private bool IsSpawnPositionValid(Vector2 position)
@@ -138,13 +167,17 @@ public partial class Main : Node2D
 
     private void UpdateSpawnStatusLabel()
     {
-        if (pickupTimer.IsStopped())
-        {
-            spawnStatusLabel.Text = "Auto Spawn: OFF";
-        }
-        else
-        {
-            spawnStatusLabel.Text = "Auto Spawn: ON";
-        }
+        spawnStatusLabel.Text = pickupTimer.IsStopped() ? "Spawn: Off" : "Spawn: On";
+    }
+
+    private void UpdatePickupCountLabel()
+    {
+        var pickupCount = GetTree().GetNodesInGroup("Pickups").Count;
+        pickupCountLabel.Text = $"Pickups: {pickupCount} / {maxPickups}";
+    }
+
+    private void OnPickupRemoved()
+    {
+        UpdatePickupCountLabel();
     }
 }
