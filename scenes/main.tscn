@@ -48,32 +48,65 @@ text = "Score: 0"
 [node name="SpawnStatusLabel" type="Label" parent="HUD" unique_id=330346634]
 anchors_preset = -1
 anchor_right = 0.002
-offset_left = 14.0
-offset_top = 32.0
-offset_right = 64.696
-offset_bottom = 55.0
+offset_left = 12.0
+offset_top = 33.0
+offset_right = 135.696
+offset_bottom = 56.0
 text = "Auto Spawn: ON"
 
 [node name="PickupCountLabel" type="Label" parent="HUD" unique_id=1901489452]
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 58.0
-offset_right = 54.0
+offset_right = 120.0
 offset_bottom = 81.0
 text = "Pickups: 0 / 10"
 
-[node name="PickupArea" parent="HUD" unique_id=1339737831 instance=ExtResource("4_jyhfs")]
-position = Vector2(204, 355)
-lifetime = 5.0
+[node name="LastPickupLabel" type="Label" parent="HUD" unique_id=645702132]
+offset_left = 10.0
+offset_top = 84.0
+offset_right = 149.0
+offset_bottom = 107.0
+text = "Last pickup: None"
 
-[node name="PickupArea2" parent="HUD" unique_id=1624375417 instance=ExtResource("4_jyhfs")]
-position = Vector2(478, 593)
+[node name="HighScoreLabel" type="Label" parent="HUD" unique_id=1350860475]
+offset_left = 11.0
+offset_top = 109.0
+offset_right = 51.0
+offset_bottom = 132.0
+text = "High Score: 0"
 
-[node name="PickupArea3" parent="HUD" unique_id=2135274612 instance=ExtResource("4_jyhfs")]
-position = Vector2(921, 445)
-lifetime = 15.0
+[node name="ComboLabel" type="Label" parent="HUD" unique_id=813573163]
+offset_left = 10.0
+offset_top = 133.0
+offset_right = 83.0
+offset_bottom = 156.0
+text = "Combo: 0"
+
+[node name="HighComboLabel" type="Label" parent="HUD" unique_id=867897677]
+offset_left = 10.0
+offset_top = 158.0
+offset_right = 123.0
+offset_bottom = 181.0
+text = "High Combo: 0"
 
 [node name="PickupTimer" type="Timer" parent="." unique_id=1267102491]
 wait_time = 2.0
 autostart = true
 
+[node name="ComboTimer" type="Timer" parent="." unique_id=1793440874]
+wait_time = 3.0
+one_shot = true
+
+[node name="PickupArea" parent="." unique_id=1339737831 instance=ExtResource("4_jyhfs")]
+position = Vector2(204, 355)
+lifetime = 5.0
+
+[node name="PickupArea2" parent="." unique_id=1624375417 instance=ExtResource("4_jyhfs")]
+position = Vector2(478, 593)
+
+[node name="PickupArea3" parent="." unique_id=2135274612 instance=ExtResource("4_jyhfs")]
+position = Vector2(921, 445)
+lifetime = 15.0
+
 [connection signal="timeout" from="PickupTimer" to="." method="_on_pickup_timer_timeout"]
+[connection signal="timeout" from="ComboTimer" to="." method="OnComboTimerTimeout"]

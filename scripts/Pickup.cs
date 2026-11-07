@@ -3,38 +3,38 @@ using Godot;
 public partial class Pickup : Area2D
 {
 	[Signal]
-	public delegate void PickupCollectedEventHandler(int amount);
+	public delegate void PickupCollectedEventHandler(int amount, PickupRarity pickupRarity);
+
+	[Export]
+	private double lifetime = 10.0;
 
 	private Timer lifetimeTimer;
 
 	private PickupRarity rarity = PickupRarity.Common;
 
-	private int points;
+	private int points = 1;
 
-	[Export]
-	private double lifetime = 10.0;
+	public int Points
+	{
+		get
+		{
+			return points;
+		}
+	}
+
+	public PickupRarity Rarity
+	{
+		get
+		{
+			return rarity;
+		}
+	}
 
 	public override void _Ready()
 	{
 		lifetimeTimer = GetNode<Timer>("LifetimeTimer");
 		lifetimeTimer.WaitTime = lifetime;
 		lifetimeTimer.Start();
-	}
-
-	private void _on_body_entered(Node2D body)
-	{
-		if (body is Player)
-		{
-			EmitSignal(SignalName.PickupCollected, points);
-
-			QueueFree();
-		}
-	}
-
-	private void LifetimeTimerTimeout()
-	{
-		QueueFree();
-		GD.Print("Pickup expired!");
 	}
 
 	public void SetPoints(int amount)
@@ -45,17 +45,39 @@ public partial class Pickup : Area2D
 	public void SetRarity(PickupRarity newRarity)
 	{
 		rarity = newRarity;
-		if (rarity == PickupRarity.Common)
+		
+		switch (rarity)
 		{
-			Modulate = Colors.Gray;
+			case PickupRarity.Common:
+				Modulate = Colors.Gray;
+				break;
+			case PickupRarity.Special:
+				Modulate = Colors.Blue;
+				break;
+			case PickupRarity.Rare:
+				Modulate = Colors.Gold;
+				break;
+			default:
+				Modulate = Colors.White;
+				GD.Print("Unknown rarity type.");
+				break;
 		}
-		else if (rarity == PickupRarity.Special)
+	}
+
+	private void _on_body_entered(Node2D body)
+	{
+		if (body is Player)
 		{
-			Modulate = Colors.Blue;
+			EmitSignal(SignalName.PickupCollected, points, (int)rarity);
+
+			QueueFree();
 		}
-		else if (rarity == PickupRarity.Rare)
-		{
-			Modulate = Colors.Gold;
-		}
+	}
+
+	private void LifetimeTimerTimeout()
+	{
+		GD.Print("Pickup expired!");
+
+		QueueFree();
 	}
 }
